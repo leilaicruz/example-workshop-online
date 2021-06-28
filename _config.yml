@@ -112,7 +112,7 @@ start_time: 0
 
 # Specify that things in the episodes collection should be output.
 collections:
-  episodes: "https://swcarpentry.github.io/python-novice-inflammation/"
+  episodes: 
     output: true
     permalink: /:path/index.html
   extras:
