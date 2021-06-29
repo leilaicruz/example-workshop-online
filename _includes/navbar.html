@@ -32,10 +32,6 @@
       <a href="{{ site.carpentries_site }}" class="pull-left">
         <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/cp-logo-blue.svg %}" alt="The Carpentries logo" />
       </a>
-      {% elsif site.carpentry == "pilot" %}
-      <a href="{{ site.lesson_site }}" class="pull-left">
-        <img class="navbar-logo" src="{{ relative_root_path }}{% link /assets/img/incubator-logo-blue.svg %}" alt="The Carpentries Incubator logo" />
-      </a>
       {% endif %}
 
       {% comment %} Always show link to home page. {% endcomment %}
@@ -53,7 +49,6 @@
         <li><a href="{{ relative_root_path }}{% link setup.md %}">Setup</a></li>
 
         {% comment %} Show lesson episodes for lessons. {% endcomment %}
-        {% if lesson_episodes.size > 0 %}
         <li class="dropdown">
           <a href="{{ relative_root_path }}/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Episodes <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -69,7 +64,6 @@
             <li><a href="{{ relative_root_path }}{% link aio.md %}">All in one page (Beta)</a></li>
           </ul>
         </li>
-        {% endif %}
 	{% endif %}
 
 	{% comment %} Show extras for lessons or if this is the main workshop-template repo (where they contain documentation). {% endcomment %}
@@ -102,7 +96,7 @@
       </ul>
       <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
-          <input type="text" title="Google search" id="google-search" placeholder="Search..." aria-label="Google site search">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
         </div>
       </form>
     </div>

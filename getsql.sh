@@ -1,3 +1,4 @@
+#!/bin/bash
 set -euo pipefail
 
 if command -v apt-get >/dev/null 2>&1 ; then

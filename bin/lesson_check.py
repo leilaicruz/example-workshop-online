@@ -59,7 +59,6 @@ P_INTERNAL_INCLUDE_LINK = re.compile(r'^{% include ([^ ]*) %}$')
 # What kinds of blockquotes are allowed?
 KNOWN_BLOCKQUOTES = {
     'callout',
-    'caution',
     'challenge',
     'checklist',
     'discussion',
@@ -68,17 +67,22 @@ KNOWN_BLOCKQUOTES = {
     'prereq',
     'quotation',
     'solution',
-    'testimonial',
-    'warning'
+    'testimonial'
 }
 
 # What kinds of code fragments are allowed?
-# Below we allow all 'language-*' code blocks
 KNOWN_CODEBLOCKS = {
     'error',
     'output',
     'source',
-    'warning'
+    'language-bash',
+    'html',
+    'language-make',
+    'language-matlab',
+    'language-python',
+    'language-r',
+    'language-shell',
+    'language-sql'
 }
 
 # What fields are required in teaching episode metadata?
@@ -108,10 +112,7 @@ def main():
 
     args = parse_args()
     args.reporter = Reporter()
-    life_cycle = check_config(args.reporter, args.source_dir)
-    # pre-alpha lessons should report without error
-    if life_cycle == "pre-alpha":
-        args.permissive = True
+    check_config(args.reporter, args.source_dir)
     check_source_rmd(args.reporter, args.source_dir, args.parser)
     args.references = read_references(args.reporter, args.reference_path)
 
@@ -176,7 +177,7 @@ def check_config(reporter, source_dir):
     reporter.check_field(config_file, 'configuration',
                          config, 'kind', 'lesson')
     reporter.check_field(config_file, 'configuration',
-                         config, 'carpentry', ('swc', 'dc', 'lc', 'cp', 'incubator'))
+                         config, 'carpentry', ('swc', 'dc', 'lc', 'cp'))
     reporter.check_field(config_file, 'configuration', config, 'title')
     reporter.check_field(config_file, 'configuration', config, 'email')
 
@@ -188,7 +189,6 @@ def check_config(reporter, source_dir):
         reporter.check(defaults in config.get('defaults', []),
                    'configuration',
                    '"root" not set to "." in configuration')
-    return config['life_cycle']
 
 def check_source_rmd(reporter, source_dir, parser):
     """Check that Rmd episode files include `source: Rmd`"""
@@ -215,7 +215,7 @@ def read_references(reporter, ref_path):
     result = {}
     urls_seen = set()
 
-    with open(ref_path, 'r', encoding='utf-8') as reader:
+    with open(ref_path, 'r') as reader:
         for (num, line) in enumerate(reader, 1):
 
             if P_INTERNAL_INCLUDE_LINK.search(line): continue
@@ -390,7 +390,7 @@ class CheckBase:
 
         for node in self.find_all(self.doc, {'type': 'codeblock'}):
             cls = self.get_val(node, 'attr', 'class')
-            self.reporter.check(cls in KNOWN_CODEBLOCKS or cls.startswith('language-'),
+            self.reporter.check(cls in KNOWN_CODEBLOCKS,
                                 (self.filename, self.get_loc(node)),
                                 'Unknown or missing code block type {0}',
                                 cls)
